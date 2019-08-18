@@ -15,7 +15,7 @@ def lambda_handler(event, context):
     print('I am being triggered!')
     print(ENDPOINT_NAME)
     
-    object_categories = ['Anita','Brownn','Codet','Iyas','Jack','Nani','Olle','Udin','Jarwo']
+    object_categories = ['orangutan1','orangutan2','orangutan3','orangutan4','orangutan5','orangutan6','orangutan7','orangutan8','orangutan9']
     
     s3 = boto3.client("s3")
     
@@ -28,7 +28,7 @@ def lambda_handler(event, context):
     print('start delay 15 secs')
     time.sleep(15)
     print('after delay 15 secs')
-    bucket = 's3-wwf-storage-gateway'
+    bucket = '<replace with your bucket name>'
     filepath = '/tmp/' + filename
     s3.download_file(bucket, filename,filepath)
     print(bucket)
@@ -75,14 +75,16 @@ def lambda_handler(event, context):
     data["YMax"] = str(predictions[0][5])
     
     #invoke another lambda that is located in ap-northeast-1
-    invokeLam = boto3.client("lambda",region_name="ap-northeast-1")
-    resp=invokeLam.invoke(FunctionName="wwf-orangutan-save-predicton-to-mysql", InvocationType="Event", Payload=json.dumps(data))
+    invokeLam = boto3.client("lambda",region_name="<replace with your AWS Region>")
+    
+    #invoke lambda for mysql saving
+    resp=invokeLam.invoke(FunctionName="<replace with your function>", InvocationType="Event", Payload=json.dumps(data))
     
     #invoke image bounding box lambda (added by Ivan 15-AUG-2019)
-    resp2=invokeLam.invoke(FunctionName="wwf-orangutan-boundingbox", InvocationType="Event", Payload=json.dumps(data))
+    resp2=invokeLam.invoke(FunctionName="<replace with your function>", InvocationType="Event", Payload=json.dumps(data))
     
     #invoke create thumbnail function (added by Aris 17-AUG-2019)
-    resp3=invokeLam.invoke(FunctionName="wwf-orangutan-createthumbnail", InvocationType="Event", Payload=json.dumps(data))
+    resp3=invokeLam.invoke(FunctionName="<replace with your function>", InvocationType="Event", Payload=json.dumps(data))
     
     
     print(json.dumps(data))
